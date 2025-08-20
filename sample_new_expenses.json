@@ -1,0 +1,65 @@
+[
+  {
+    "date": "2025-08-20",
+    "description": "Uber Eats - Dinner delivery",
+    "amount": 45.67,
+    "origin": "Chase Credit Card",
+    "category": "UNCATEGORIZED",
+    "subcategory": "",
+    "note": ""
+  },
+  {
+    "date": "2025-08-19",
+    "description": "Starbucks Coffee",
+    "amount": 6.25,
+    "origin": "AMEX",
+    "category": "WANT",
+    "subcategory": "Restaurant",
+    "note": "Morning coffee"
+  },
+  {
+    "date": "2025-08-18",
+    "description": "Grocery Store - Weekly shopping",
+    "amount": 125.40,
+    "origin": "Chase Debit",
+    "category": "NEED",
+    "subcategory": "Groceries",
+    "note": "Weekly groceries"
+  },
+  {
+    "date": "2025-08-17",
+    "description": "Gas Station",
+    "amount": 58.90,
+    "origin": "Shell Credit Card",
+    "category": "NEED",
+    "subcategory": "Utilities",
+    "note": ""
+  },
+  {
+    "date": "2025-08-16",
+    "description": "Netflix Subscription",
+    "amount": 15.99,
+    "origin": "Chase Credit Card",
+    "category": "WANT",
+    "subcategory": "Entertainment",
+    "note": "Monthly subscription"
+  },
+  {
+    "date": "2025-08-15",
+    "description": "Flight to Mexico City",
+    "amount": 450.00,
+    "origin": "Chase Credit Card",
+    "category": "ALTIS",
+    "subcategory": "Flight",
+    "note": "Business trip"
+  },
+  {
+    "date": "2025-08-14",
+    "description": "Office Depot - Supplies",
+    "amount": 35.60,
+    "origin": "AMEX",
+    "category": "WORK",
+    "subcategory": "Office Supplies",
+    "note": "Printer paper and pens"
+  }
+]

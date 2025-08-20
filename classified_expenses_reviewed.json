@@ -1,0 +1,806 @@
+[
+  {
+    "date": "2025-07-18",
+    "description": "APPLE.COM/BILL          CUPERTINO",
+    "amount": 249.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-18",
+    "description": "CLAUDE.AI SUBSCRIPTION  SAN FRANCISCO",
+    "amount": 384.5,
+    "origin": "AMEX",
+    "category": "WORK"
+  },
+  {
+    "date": "2025-07-17",
+    "description": "CABLE Y COMU MORELIA SA CIUDAD DE MEXIC",
+    "amount": 490.0,
+    "origin": "AMEX",
+    "category": "NEED",
+    "note": "Pizzi"
+  },
+  {
+    "date": "2025-07-17",
+    "description": "D J*WSJ                 800-568-7625",
+    "amount": 38.55,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-16",
+    "description": "HUNAN ARTZ              MEXICO",
+    "amount": 3693.8,
+    "origin": "AMEX",
+    "category": "ALTIS",
+    "note": "business lunch. Hunan will usually be this. "
+  },
+  {
+    "date": "2025-07-16",
+    "description": "REST ESENCIAL BARRA DE  MIGUEL HIDALGO",
+    "amount": 184.8,
+    "origin": "AMEX",
+    "category": "WANT",
+    "note": "coffee"
+  },
+  {
+    "date": "2025-07-16",
+    "description": "TICKETMASTER CIUDAD DE  Ciudad de Mexic",
+    "amount": 8590.0,
+    "origin": "AMEX",
+    "category": "WANT",
+    "note": "concert tickets"
+  },
+  {
+    "date": "2025-07-15",
+    "description": "AMAZON MX MSI MKT*AMAZO MEXICO CITY",
+    "amount": 317.46,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-15",
+    "description": "NETPAY*BLANCO CASTELAR  Ciudad De Mexic",
+    "amount": 3524.75,
+    "origin": "AMEX",
+    "category": "ALTIS",
+    "note": "business dinner. Blanco Castelar will always be this. "
+  },
+  {
+    "date": "2025-07-13",
+    "description": "AMAZON MX MSI RETAIL*AM MEXICO CITY",
+    "amount": 326.02,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-13",
+    "description": "REST EL JAMIL           CIUDAD DE MEX",
+    "amount": 1538.7,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-13",
+    "description": "UBER TRIP               HTTPS://HELP.UB",
+    "amount": 49.51,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-13",
+    "description": "UBER TRIP               HTTPS://HELP.UB",
+    "amount": 72.57,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-12",
+    "description": "AMAZON MX MARKETPLACE*A MEXICO CITY",
+    "amount": 257.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-12",
+    "description": "AMAZON MX MARKETPLACE*A MEXICO CITY",
+    "amount": 829.98,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-12",
+    "description": "AMAZON MX MARKETPLACE*A MEXICO CITY",
+    "amount": 1907.75,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-12",
+    "description": "AMAZON MX*AMAZON RETAIL MEXICO CITY",
+    "amount": 585.9,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-12",
+    "description": "AMAZON MX*AMAZON RETAIL MEXICO CITY",
+    "amount": 1273.02,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-12",
+    "description": "CGO AUT TELCEL REGION 9 MEXICO",
+    "amount": 599.0,
+    "origin": "AMEX",
+    "category": "NEED"
+  },
+  {
+    "date": "2025-07-12",
+    "description": "MERCADOPAGO*ELBUENTROMP Miguel Hidalg",
+    "amount": 233.45,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-12",
+    "description": "PODER JUSTO SAPI DE CV  MEXICO CITY",
+    "amount": 84.03,
+    "origin": "AMEX",
+    "category": "NEED",
+    "note": "Justo, grocery store"
+  },
+  {
+    "date": "2025-07-12",
+    "description": "PODER JUSTO SAPI DE CV  MEXICO CITY",
+    "amount": 1050.42,
+    "origin": "AMEX",
+    "category": "NEED",
+    "note": "Justo, grocery store"
+  },
+  {
+    "date": "2025-07-12",
+    "description": "UBER TRIP               HTTPS://HELP.UB",
+    "amount": 248.87,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-10",
+    "description": "APPLE.COM/BILL          CUPERTINO",
+    "amount": 129.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-09",
+    "description": "DAVE & BUSTER'S #18 18  SAN ANTONIO",
+    "amount": 446.29,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-09",
+    "description": "DAVE & BUSTER'S #18 18  SAN ANTONIO",
+    "amount": 506.74,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-09",
+    "description": "OPENAI *CHATGPT SUBSCR  SAN FRANCISCO",
+    "amount": 381.49,
+    "origin": "AMEX",
+    "category": "WORK"
+  },
+  {
+    "date": "2025-07-08",
+    "description": "BARNES & NOBLE #2802 00 SAN ANTONIO",
+    "amount": 1455.86,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-08",
+    "description": "DICK'S SPORTING GOODS I CORAOPOLIS",
+    "amount": 466.06,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-08",
+    "description": "H-E-B #102 000000000879 SAN ANTONIO",
+    "amount": 813.35,
+    "origin": "AMEX",
+    "category": "NEED",
+    "note": "HEB is a grocery store"
+  },
+  {
+    "date": "2025-07-07",
+    "description": "TST* MCINTYRES - NORTH  SAN ANTONIO",
+    "amount": 141.6,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-05",
+    "description": "H-E-B #262 000000000879 SAN ANTONIO",
+    "amount": 443.37,
+    "origin": "AMEX",
+    "category": "NEED"
+  },
+  {
+    "date": "2025-07-05",
+    "description": "POPSTROKE* RESTAURANT   JUPITER",
+    "amount": 1325.53,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-05",
+    "description": "UBER",
+    "amount": 519.72,
+    "origin": "AMEX",
+    "category": "WANT",
+    "note": "Uber is transportation. "
+  },
+  {
+    "date": "2025-07-04",
+    "description": "CTLP*Able Vending 0000  ELPASO",
+    "amount": 95.67,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-04",
+    "description": "CTLP*Able Vending 0000  ELPASO",
+    "amount": 95.67,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-04",
+    "description": "LAS GORDITAS BAKED GOOD Helotes",
+    "amount": 268.36,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-03",
+    "description": "H-E-B #262 000000000879 SAN ANTONIO",
+    "amount": 158.25,
+    "origin": "AMEX",
+    "category": "NEED"
+  },
+  {
+    "date": "2025-07-03",
+    "description": "PAYPAL *SANTIAGOPER     4029357733",
+    "amount": 299.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-03",
+    "description": "ROTOPLAS SERVICIO       CDMX",
+    "amount": 313.65,
+    "origin": "AMEX",
+    "category": "NEED",
+    "note": "Drinking water, basic services"
+  },
+  {
+    "date": "2025-07-02",
+    "description": "BARNES & NOBLE #2685 00 SAN ANTONIO",
+    "amount": 1250.38,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-02",
+    "description": "MARSHALLS #0662 0000006 SAN ANTONIO",
+    "amount": 708.39,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-02",
+    "description": "NETFLIX.COM             866-579-7172",
+    "amount": 318.0,
+    "origin": "AMEX",
+    "category": "WANT",
+    "note": "streaming"
+  },
+  {
+    "date": "2025-07-02",
+    "description": "SPROUTS FARMERS MKT#118 SAN ANTONIO",
+    "amount": 437.39,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-01",
+    "description": "APPLE.COM/BILL          CUPERTINO",
+    "amount": 179.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-01",
+    "description": "NETPAY*TAKE OFF 2 AV CA Ciudad De Mexic",
+    "amount": 87.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-01",
+    "description": "P. Terry's Burger Stand San Antonio",
+    "amount": 477.73,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-01",
+    "description": "PIZZA BAR               MEXICO",
+    "amount": 225.5,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-07-01",
+    "description": "SGMNYL                  Ciudad de Mexic",
+    "amount": 102738.77,
+    "origin": "AMEX",
+    "category": "IGNORE",
+    "note": "Health insurance. This is a monthly expense in reality"
+  },
+  {
+    "date": "2025-07-01",
+    "description": "UBER TRIP               HTTPS://HELP.UB",
+    "amount": 144.5,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-29",
+    "description": "REVERSION CARGO SERVICIO DE FACTURACION",
+    "amount": -0.01,
+    "origin": "AMEX",
+    "category": "IGNORE"
+  },
+  {
+    "date": "2025-06-29",
+    "description": "SERVICIO DE FACTURACION POR REDENCION",
+    "amount": 0.01,
+    "origin": "AMEX",
+    "category": "IGNORE"
+  },
+  {
+    "date": "2025-06-28",
+    "description": "APPLE.COM/BILL          CUPERTINO",
+    "amount": 678.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-28",
+    "description": "AZTLAN PARQUE URBANO AN CIUDAD DE MEXIC",
+    "amount": 95.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-28",
+    "description": "AZTLAN PARQUE URBANO AN CIUDAD DE MEXIC",
+    "amount": 100.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-28",
+    "description": "AZTLAN PARQUE URBANO AT CIUDAD DE MEXIC",
+    "amount": 100.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-28",
+    "description": "AZTLAN PARQUE URBANO PA CIUDAD DE MEXIC",
+    "amount": 200.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-28",
+    "description": "AZTLAN PARQUE URBANO RE CIUDAD DE MEXIC",
+    "amount": 950.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-28",
+    "description": "CHILIS PARQUE AZTLAN    MEXICO",
+    "amount": 830.3,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-28",
+    "description": "DINOAVENTURA ARAGON     ECATEPEC DE M",
+    "amount": 110.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-28",
+    "description": "REVERSION CARGO SERVICIO DE FACTURACION",
+    "amount": -0.01,
+    "origin": "AMEX",
+    "category": "IGNORE"
+  },
+  {
+    "date": "2025-06-28",
+    "description": "SERVICIO DE FACTURACION POR REDENCION",
+    "amount": 0.01,
+    "origin": "AMEX",
+    "category": "UNCATEGORIZED"
+  },
+  {
+    "date": "2025-06-28",
+    "description": "SUPERAMA MICHOACAN      CD MEXICO",
+    "amount": 295.85,
+    "origin": "AMEX",
+    "category": "NEED",
+    "note": "Superama is a grocery store"
+  },
+  {
+    "date": "2025-06-28",
+    "description": "UBER TRIP               HTTPS://HELP.UB",
+    "amount": 92.96,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-28",
+    "description": "UBER TRIP               HTTPS://HELP.UB",
+    "amount": 161.75,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-27",
+    "description": "CAVATAPPI PIZZA         CIUDAD DE MEX",
+    "amount": 776.25,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-27",
+    "description": "REVERSION CARGO SERVICIO DE FACTURACION",
+    "amount": -0.01,
+    "origin": "AMEX",
+    "category": "IGNORE"
+  },
+  {
+    "date": "2025-06-27",
+    "description": "SERVICIO DE FACTURACION POR REDENCION",
+    "amount": 0.01,
+    "origin": "AMEX",
+    "category": "IGNORE"
+  },
+  {
+    "date": "2025-06-26",
+    "description": "GRACIAS POR SU PAGO CON CARGO A BBVA",
+    "amount": -90795.8,
+    "origin": "AMEX",
+    "category": "IGNORE",
+    "note": "credit card payment"
+  },
+  {
+    "date": "2025-06-26",
+    "description": "JUSTO",
+    "amount": -400.0,
+    "origin": "AMEX",
+    "category": "NEED",
+    "note": "grocery store"
+  },
+  {
+    "date": "2025-06-25",
+    "description": "CAVATAPPI PIZZA         CIUDAD DE MEX",
+    "amount": 644.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-24",
+    "description": "ISHOP CONDESA           DISTRITO FEDERA",
+    "amount": 299.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-24",
+    "description": "PODER JUSTO SAPI DE CV  MEXICO CITY",
+    "amount": 6.63,
+    "origin": "AMEX",
+    "category": "NEED",
+    "note": "grocery store"
+  },
+  {
+    "date": "2025-06-24",
+    "description": "SMART FISH              MEXICO",
+    "amount": 441.0,
+    "origin": "AMEX",
+    "category": "NEED",
+    "note": "grocery store"
+  },
+  {
+    "date": "2025-06-23",
+    "description": "PODER JUSTO SAPI DE CV  MEXICO CITY",
+    "amount": 1362.3,
+    "origin": "AMEX",
+    "category": "NEED",
+    "note": "grocery store"
+  },
+  {
+    "date": "2025-06-22",
+    "description": "APPLE.COM/BILL          CUPERTINO",
+    "amount": 1470.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-22",
+    "description": "UBER TRIP               HTTPS://HELP.UB",
+    "amount": 97.05,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-22",
+    "description": "UBER TRIP               HTTPS://HELP.UB",
+    "amount": 123.58,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-21",
+    "description": "AEROMEXICO 8695181      MEXICO WEB",
+    "amount": 3229.0,
+    "origin": "AMEX",
+    "category": "WANT",
+    "note": "Personal flight. Usually an ALITS expense. "
+  },
+  {
+    "date": "2025-06-21",
+    "description": "AMAZON MX MARKETPLACE*A MEXICO CITY",
+    "amount": 999.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-21",
+    "description": "AMAZON MX MARKETPLACE*A MEXICO CITY",
+    "amount": 4298.99,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-21",
+    "description": "AMAZON MX MSI MKT*AMAZO MEXICO CITY",
+    "amount": 23.53,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "AMAZON MX MARKETPLACE*A MEXICO CITY",
+    "amount": 179.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "AMAZON MX MSI MKT*AMAZO MEXICO CITY",
+    "amount": 38.26,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "AMAZON MX MSI MKT*AMAZO MEXICO CITY",
+    "amount": 51.8,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "AMAZON MX MSI MKT*AMAZO MEXICO CITY",
+    "amount": 59.9,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "AMAZON MX MSI MKT*AMAZO MEXICO CITY",
+    "amount": 66.92,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "AMAZON MX MSI MKT*AMAZO MEXICO CITY",
+    "amount": 240.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "AMAZON MX MSI RETAIL*AM MEXICO CITY",
+    "amount": 14.09,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "AMAZON MX MSI RETAIL*AM MEXICO CITY",
+    "amount": 184.01,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "AMAZON MX MSI RETAIL*AM MEXICO CITY",
+    "amount": 235.34,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "AMAZON MX MSI RETAIL*AM MEXICO CITY",
+    "amount": 273.3,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "APPLE.COM/BILL          CUPERTINO",
+    "amount": 228.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "BANANA PERISUR 0276     MEXICO DF",
+    "amount": 2878.66,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "EL PALACIO HIERRO COYOA MEXICO",
+    "amount": 635.91,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "ELPALACIOHIERRO COM     MEXICO",
+    "amount": 376.94,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "ELPALACIOHIERRO COM     MEXICO",
+    "amount": 427.7,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "ELPALACIOHIERRO COM     MEXICO",
+    "amount": 2000.4,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "LIV PERISUR 0005        MEXICO DF",
+    "amount": 733.17,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "LIVERPOOL INTER 0039    MEXICO DF",
+    "amount": 359.87,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "LIVERPOOL INTER 0039    MEXICO DF",
+    "amount": 453.06,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "MERCADO LIBRE           MEXICO",
+    "amount": 99.8,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "MERCADO LIBRE           MEXICO",
+    "amount": 905.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "MERCADOPAGO*SAMSUNG     Miguel Hidalg",
+    "amount": 755.51,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "Macstore Web MSI        Mexico",
+    "amount": 1499.94,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "PAYPAL *LGELECTRONI     4029357733",
+    "amount": 1226.62,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "PAYPAL *SAMSUNGELEC     4029357733",
+    "amount": 849.93,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "PB KIDS PERISUR 0357    AV. ANILL",
+    "amount": 1150.55,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-20",
+    "description": "TIENDA COM MEX E COMMER MEXICO",
+    "amount": 1168.58,
+    "origin": "AMEX",
+    "category": "NEED"
+  },
+  {
+    "date": "2025-06-19",
+    "description": "MERCPAGO*AMIGOCOFFEEROA Cuauht?moc",
+    "amount": -699.0,
+    "origin": "AMEX",
+    "category": "IGNORE",
+    "note": "this was a coffee purchase. "
+  },
+  {
+    "date": "2025-06-19",
+    "description": "REST LA MICHOACANA      BENITO JUAREZ",
+    "amount": 130.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  },
+  {
+    "date": "2025-06-18",
+    "description": "RESTAURANTE MXN         MIGUEL HIDALG",
+    "amount": 259.0,
+    "origin": "AMEX",
+    "category": "WANT"
+  }
+]

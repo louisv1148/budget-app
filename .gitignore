@@ -1,0 +1,30 @@
+# API Keys and sensitive data
+config.json
+.env
+*.key
+temp_training_data.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+
+# Streamlit
+.streamlit/
+
+# Data files (optional - uncomment if you want to keep expense data private)
+# classified_expenses.json
+# all_expenses_*.json
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
