@@ -14,7 +14,7 @@ def save_expenses(data, filepath):
         json.dump(data, f, indent=2, ensure_ascii=False)
 
 # Load existing classified expenses
-def load_existing_expenses(filepath="classified_expenses.json"):
+def load_existing_expenses(filepath="data/classified_expenses.json"):
     if os.path.exists(filepath):
         with open(filepath, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -43,7 +43,7 @@ def append_to_classified_expenses(reviewed_expenses):
     
     if deduplicated_new:
         all_expenses = existing_expenses + deduplicated_new
-        save_expenses(all_expenses, "classified_expenses.json")
+        save_expenses(all_expenses, "data/classified_expenses.json")
         return len(deduplicated_new)
     return 0
 
@@ -194,7 +194,7 @@ if uploaded_file is not None:
             save_and_append = st.form_submit_button("💾📝 Save & Append", use_container_width=True)
 
         if save_reviewed or save_and_append:
-            save_expenses(expenses, "classified_expenses_reviewed.json")
+            save_expenses(expenses, "data/classified_expenses_reviewed.json")
             st.success("✅ Changes saved to classified_expenses_reviewed.json")
         
         if append_to_master or save_and_append:
