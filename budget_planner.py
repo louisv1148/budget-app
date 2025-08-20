@@ -2,7 +2,6 @@ import streamlit as st
 import json
 import os
 
-st.set_page_config(page_title="💰 Budget Planner", layout="wide")
 st.title("💰 Budget Setup and Allocation")
 
 CATEGORY_OPTIONS = ["WANT", "NEED", "SAVINGS", "WORK"]
