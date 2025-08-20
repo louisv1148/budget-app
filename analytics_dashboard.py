@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import json
+import os
 import datetime as dt
 import plotly.express as px
 
@@ -282,15 +283,61 @@ if not df.empty:
         (df_filtered["amount"] >= min_amount)
     ].sort_values("date", ascending=False)
     
-    # Only show subcategory column if it exists
-    display_columns = ["date", "description", "category", "amount"]
-    if "subcategory" in table_filtered.columns:
-        display_columns.insert(-1, "subcategory")  # Insert before amount
+    # Display as interactive table with edit buttons
+    st.write("**Expense Details** (click ✏️ to edit)")
     
-    st.dataframe(
-        table_filtered[display_columns],
-        use_container_width=True
-    )
+    # Create header row
+    header_cols = st.columns([2, 4, 2, 2, 2, 1])
+    with header_cols[0]:
+        st.write("**Date**")
+    with header_cols[1]:
+        st.write("**Description**")
+    with header_cols[2]:
+        st.write("**Category**")
+    with header_cols[3]:
+        if "subcategory" in table_filtered.columns:
+            st.write("**Subcategory**")
+        else:
+            st.write("**Type**")
+    with header_cols[4]:
+        st.write("**Amount**")
+    with header_cols[5]:
+        st.write("**Edit**")
+    
+    st.divider()
+    
+    # Display each row with edit button
+    for idx, row in table_filtered.iterrows():
+        cols = st.columns([2, 4, 2, 2, 2, 1])
+        
+        with cols[0]:
+            st.write(row["date"].strftime("%Y-%m-%d"))
+        with cols[1]:
+            st.write(row["description"])
+        with cols[2]:
+            st.write(row["category"])
+        with cols[3]:
+            if "subcategory" in table_filtered.columns:
+                st.write(row.get("subcategory", "No Subcategory"))
+            else:
+                st.write("—")
+        with cols[4]:
+            st.write(f"${row['amount']:,.0f}")
+        with cols[5]:
+            if st.button("✏️", key=f"edit_{idx}", help="Edit this expense"):
+                # Save to session state for editing
+                edit_data = row.to_dict()
+                # Convert date to string for JSON serialization
+                if 'date' in edit_data:
+                    edit_data['date'] = edit_data['date'].strftime('%Y-%m-%d')
+                
+                # Save to temp file for cross-page communication
+                os.makedirs("data", exist_ok=True)
+                with open("data/to_edit.json", "w", encoding="utf-8") as f:
+                    json.dump(edit_data, f, indent=2, ensure_ascii=False, default=str)
+                
+                st.success("✅ Expense saved for editing! Navigate to the Expense Classifier to complete the edit.")
+                st.info("💡 Use the sidebar to switch to 'Expense Classifier' where you'll see the editing interface.")
     
     # Summary stats
     col1, col2, col3 = st.columns(3)

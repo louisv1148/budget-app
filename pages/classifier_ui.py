@@ -62,9 +62,94 @@ SUBCATEGORY_MAP = {
     "UNCATEGORIZED": []
 }
 
-st.set_page_config(page_title="🧾 Expense Classifier", layout="wide")
-st.title("🧾 Review and Confirm New Expenses")
+st.title("🧾 Expense Classifier")
 
+# Check for edit request from analytics dashboard
+edit_file_path = "data/to_edit.json"
+if os.path.exists(edit_file_path):
+    st.info("✏️ **Edit Mode**: An expense from the Analytics Dashboard is ready for editing.")
+    
+    with open(edit_file_path, "r", encoding="utf-8") as f:
+        edit_expense = json.load(f)
+    
+    st.subheader("🔧 Edit Expense")
+    
+    with st.form("edit_form"):
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.write("**Original Expense:**")
+            st.write(f"Date: {edit_expense.get('date', '')}")
+            st.write(f"Description: {edit_expense.get('description', '')}")
+            st.write(f"Amount: ${edit_expense.get('amount', 0):,.0f}")
+            st.write(f"Current Category: {edit_expense.get('category', 'UNCATEGORIZED')}")
+            st.write(f"Current Subcategory: {edit_expense.get('subcategory', 'None')}")
+        
+        with col2:
+            st.write("**Edit Classification:**")
+            
+            # Category selection
+            current_cat = edit_expense.get("category", "UNCATEGORIZED")
+            new_category = st.selectbox(
+                "Category",
+                CATEGORY_OPTIONS,
+                index=CATEGORY_OPTIONS.index(current_cat) if current_cat in CATEGORY_OPTIONS else 0
+            )
+            
+            # Subcategory selection
+            subcat_options = SUBCATEGORY_MAP.get(new_category, [])
+            current_sub = edit_expense.get("subcategory", "")
+            
+            if subcat_options:
+                new_subcategory = st.selectbox(
+                    "Subcategory",
+                    [""] + subcat_options,
+                    index=([""] + subcat_options).index(current_sub) if current_sub in ([""] + subcat_options) else 0
+                )
+            else:
+                new_subcategory = ""
+                st.selectbox("Subcategory", ["N/A"], disabled=True)
+            
+            # Note field
+            new_note = st.text_input("Note", value=edit_expense.get("note", ""))
+        
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            save_edit = st.form_submit_button("💾 Save Changes", use_container_width=True)
+        with col2:
+            cancel_edit = st.form_submit_button("❌ Cancel Edit", use_container_width=True)
+        
+        if save_edit:
+            # Update the expense in classified_expenses.json
+            existing_expenses = load_existing_expenses()
+            
+            # Find and update the matching expense
+            updated = False
+            for i, exp in enumerate(existing_expenses):
+                if (exp.get("date") == edit_expense.get("date") and 
+                    exp.get("description") == edit_expense.get("description") and
+                    exp.get("amount") == edit_expense.get("amount")):
+                    
+                    existing_expenses[i]["category"] = new_category
+                    existing_expenses[i]["subcategory"] = new_subcategory
+                    existing_expenses[i]["note"] = new_note
+                    updated = True
+                    break
+            
+            if updated:
+                save_expenses(existing_expenses, "data/classified_expenses.json")
+                os.remove(edit_file_path)  # Clean up temp file
+                st.success("✅ Expense updated successfully! You can now return to the Analytics Dashboard.")
+            else:
+                st.error("❌ Could not find matching expense to update.")
+        
+        if cancel_edit:
+            os.remove(edit_file_path)  # Clean up temp file
+            st.info("Edit cancelled. You can return to the Analytics Dashboard.")
+    
+    st.divider()
+
+st.subheader("📁 Upload New Expenses")
 uploaded_file = st.file_uploader("Upload new_expenses.json to classify:", type="json")
 
 if uploaded_file is not None:
