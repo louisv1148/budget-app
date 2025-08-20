@@ -210,7 +210,7 @@ if not df.empty:
 
         # === Subcategory Analysis ===
         if "subcategory" in df_filtered.columns:
-            st.subheader("📋 Spending vs. Budget by Subcategory")
+            st.subheader("📋 Budget Utilization by Subcategory")
             # Fill missing subcategories
             df_sub = df_filtered.copy()
             df_sub["subcategory"] = df_sub["subcategory"].fillna("No Subcategory")
@@ -232,21 +232,36 @@ if not df.empty:
                 sub_budget = pd.DataFrame(budget_rows)
                 sub_merged = pd.merge(sub_actual, sub_budget, on=["category", "subcategory"], how="outer").fillna(0)
                 sub_merged["delta"] = sub_merged["budgeted"] - sub_merged["amount"]
+                sub_merged["utilization"] = (sub_merged["amount"] / sub_merged["budgeted"] * 100).round(1)
                 
-                # Sort subcategories by spending amount within each category
+                # Sort by category, then by spending amount within each category
                 sub_merged = sub_merged.sort_values(["category", "amount"], ascending=[True, False])
-
-                fig2 = px.bar(
-                    sub_merged.melt(id_vars=["category", "subcategory"], value_vars=["amount", "budgeted"]),
-                    x="subcategory", y="value", color="variable", barmode="group",
-                    facet_col="category", title="Spending vs. Budget by Subcategory",
-                    labels={"value": "Amount ($)", "variable": "Type"},
-                    color_discrete_map={"amount": "#ff7f0e", "budgeted": "#1f77b4"}
-                )
-                fig2.update_traces(texttemplate='$%{y:,.0f}', textposition='outside')
-                fig2.update_xaxes(tickangle=-45)
-                fig2.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
-                st.plotly_chart(fig2, use_container_width=True)
+                
+                # Display as vertical list organized by category
+                current_category = None
+                for _, row in sub_merged.iterrows():
+                    # Show category header when it changes
+                    if row["category"] != current_category:
+                        current_category = row["category"]
+                        st.write(f"**{current_category}**")
+                    
+                    # Only show subcategories that have a budget or actual spending
+                    if row["budgeted"] > 0 or row["amount"] > 0:
+                        col1, col2 = st.columns([3, 1])
+                        with col1:
+                            utilization = row["utilization"] if row["budgeted"] > 0 else 0
+                            # Handle cases where there's no budget but there's spending
+                            if row["budgeted"] == 0 and row["amount"] > 0:
+                                progress_val = 1.0  # Show full bar for over-budget
+                                text = f"  {row['subcategory']}: ${row['amount']:,.0f} / $0 (No Budget Set)"
+                            else:
+                                progress_val = min(utilization / 100, 1.0)
+                                text = f"  {row['subcategory']}: ${row['amount']:,.0f} / ${row['budgeted']:,.0f} ({utilization:.1f}%)"
+                            
+                            st.progress(progress_val, text=text)
+                        with col2:
+                            delta_color = "red" if row["delta"] < 0 else "green"
+                            st.markdown(f"<span style='color: {delta_color}; font-weight: bold;'>${row['delta']:+,.0f}</span>", unsafe_allow_html=True)
         else:
             st.info("📋 Subcategory data not available in expense records. Classify expenses with subcategories to see detailed analysis.")
 
@@ -336,8 +351,8 @@ if not df.empty:
                 with open("data/to_edit.json", "w", encoding="utf-8") as f:
                     json.dump(edit_data, f, indent=2, ensure_ascii=False, default=str)
                 
-                st.success("✅ Expense saved for editing! Navigate to the Expense Classifier to complete the edit.")
-                st.info("💡 Use the sidebar to switch to 'Expense Classifier' where you'll see the editing interface.")
+                # Redirect to Expense Classifier
+                st.switch_page("pages/classifier_ui.py")
     
     # Summary stats
     col1, col2, col3 = st.columns(3)

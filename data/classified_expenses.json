@@ -605,8 +605,10 @@
     "date": "2025-08-01",
     "description": "SPORTS WORLD SPORTS WOR CANCUN",
     "amount": 1823.67,
-    "category": "WANT",
-    "origin": "AMEX"
+    "category": "NEED",
+    "origin": "AMEX",
+    "subcategory": "",
+    "note": "nan"
   },
   {
     "date": "2025-08-01",
