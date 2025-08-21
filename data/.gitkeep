@@ -1,0 +1,2 @@
+# This file keeps the data directory in git while ignoring all data files
+# Your sensitive financial data files will be ignored by git
