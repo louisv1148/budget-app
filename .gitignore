@@ -1,8 +1,19 @@
-# API Keys and sensitive data
+# API Keys and sensitive data - CRITICAL SECURITY
 config.json
 .env
+.env.local
+.env.production
+.env.staging
 *.key
+*.secret
+api_keys.txt
+secrets.txt
+credentials.json
 temp_training_data.json
+
+# Claude API and other AI service keys
+claude_api_key.txt
+openai_api_key.txt
 
 # Python
 __pycache__/
@@ -16,9 +27,12 @@ env/
 # Streamlit
 .streamlit/
 
-# Data files (optional - uncomment if you want to keep expense data private)
-# classified_expenses.json
-# all_expenses_*.json
+# CRITICAL: Protect all sensitive financial data - NEVER commit these files
+data/
+*.json
+!requirements.json
+!package.json
+!package-lock.json
 
 # OS files
 .DS_Store
