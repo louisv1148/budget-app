@@ -1,373 +1,323 @@
-import streamlit as st
-import pandas as pd
+"""Analytics Dashboard (v2 — section-based)."""
+
+from __future__ import annotations
+
+import datetime as dt
 import json
 import os
-import datetime as dt
+
+import pandas as pd
 import plotly.express as px
+import streamlit as st
+
+from schema import SECTIONS, SECTION_LABELS, sections_in_order
+from utils.data_loader import load_transactions, load_budget
+
 
 st.title("📊 Budget Analytics Dashboard")
 
-# === Load classified expenses ===
-def load_expenses():
-    try:
-        with open("data/classified_expenses.json", "r", encoding="utf-8") as f:
-            return pd.DataFrame(json.load(f))
-    except Exception as e:
-        st.error(f"Error loading expenses: {e}")
+
+# ---------- data ----------
+
+def _to_df() -> pd.DataFrame:
+    rows = load_transactions()
+    if not rows:
         return pd.DataFrame()
+    df = pd.DataFrame(rows)
+    df["date"] = pd.to_datetime(df["date"], errors="coerce")
+    df["amount_mxn"] = pd.to_numeric(df.get("amount_mxn", df.get("amount_native")), errors="coerce")
+    df = df.dropna(subset=["amount_mxn", "date"])
+    if "section" not in df.columns:
+        df["section"] = "VARIABLE"
+    if "subcategory" not in df.columns:
+        df["subcategory"] = ""
+    return df
 
-# === Load budget ===
-def load_budget():
-    try:
-        with open("data/budget.json", "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception as e:
-        st.warning("No budget found. Create one in the Budget Planner.")
-        return {}
 
-# === Filters ===
-def get_period_filter(df, option, custom_start=None, custom_end=None):
-    if option == "Custom Range" and custom_start and custom_end:
-        mask = (df["date"] >= pd.to_datetime(custom_start)) & (df["date"] <= pd.to_datetime(custom_end))
-        return df.loc[mask], custom_start, custom_end
-        
+df = _to_df()
+budget = load_budget()
+
+
+# ---------- period filter ----------
+
+def _period_range(opt: str, custom_start=None, custom_end=None):
     today = dt.date.today()
-    if option == "Current Calendar Month":
-        start = today.replace(day=1)
-        end = (start + dt.timedelta(days=32)).replace(day=1) - dt.timedelta(days=1)
-    elif option == "Prior Calendar Month":
-        current_month_start = today.replace(day=1)
-        end = current_month_start - dt.timedelta(days=1)
-        start = end.replace(day=1)
-    elif option == "Current Credit Card Month":
-        if today.day >= 20:
-            start = today.replace(day=20)
-            end = (start + dt.timedelta(days=32)).replace(day=19)
-        else:
-            end = today.replace(day=19)
-            start = (end - dt.timedelta(days=32)).replace(day=20)
-    elif option == "Prior Credit Card Month":
-        if today.day >= 20:
-            current_start = today.replace(day=20)
-            end = (current_start - dt.timedelta(days=1))
-            start = (end - dt.timedelta(days=32)).replace(day=20)
-        else:
-            current_end = today.replace(day=19)
-            end = (current_end - dt.timedelta(days=32)).replace(day=19)
-            start = (end - dt.timedelta(days=32)).replace(day=20)
-    else:  # All Time
-        return df, None, None
+    if opt == "Custom Range" and custom_start and custom_end:
+        return custom_start, custom_end
+    if opt == "Current Calendar Month":
+        s = today.replace(day=1)
+        e = (s + dt.timedelta(days=32)).replace(day=1) - dt.timedelta(days=1)
+        return s, e
+    if opt == "Prior Calendar Month":
+        s = today.replace(day=1)
+        e = s - dt.timedelta(days=1)
+        s = e.replace(day=1)
+        return s, e
+    if opt == "Current Close Month (Amex-cycle aware)":
+        # Use today's calendar month as the close_month we're rolling up
+        return today.replace(day=1), today
+    if opt == "All Time":
+        return None, None
+    return None, None
 
+
+def _apply_filter(df: pd.DataFrame, opt: str, start, end) -> pd.DataFrame:
+    if df.empty:
+        return df
+    if opt == "Current Close Month (Amex-cycle aware)":
+        close_month = f"{start.year:04d}-{start.month:02d}"
+        return df[df["close_month"] == close_month]
+    if start is None or end is None:
+        return df
     mask = (df["date"] >= pd.to_datetime(start)) & (df["date"] <= pd.to_datetime(end))
-    return df.loc[mask], start, end
+    return df.loc[mask]
 
-def calculate_time_progress(start_date, end_date):
-    """Calculate how much of the time period has elapsed"""
-    if not start_date or not end_date:
+
+def _time_progress(start, end):
+    if not start or not end:
         return None
-    
     today = dt.date.today()
-    start = start_date if isinstance(start_date, dt.date) else start_date.date()
-    end = end_date if isinstance(end_date, dt.date) else end_date.date()
-    
-    if today < start:
+    s = start if isinstance(start, dt.date) else start.date()
+    e = end if isinstance(end, dt.date) else end.date()
+    if today < s:
         return 0
-    elif today > end:
+    if today > e:
         return 100
-    else:
-        total_days = (end - start).days + 1
-        elapsed_days = (today - start).days + 1
-        return min(100, (elapsed_days / total_days) * 100)
+    total = (e - s).days + 1
+    elapsed = (today - s).days + 1
+    return min(100, (elapsed / total) * 100)
 
-# === Main App ===
-df = load_expenses()
-budget_data = load_budget()
 
-if not df.empty:
-    df["date"] = pd.to_datetime(df["date"])
-    df["amount"] = pd.to_numeric(df["amount"], errors="coerce")
-    df = df.dropna(subset=["amount"])
+# ---------- UI ----------
 
-    # Period selection with custom range option
-    col1, col2, col3 = st.columns([1, 1, 1])
-    with col1:
-        period = st.selectbox(
-            "Select Time Period:",
-            ["Current Calendar Month", "Prior Calendar Month", "Current Credit Card Month", "Prior Credit Card Month", "Custom Range", "All Time"]
-        )
-    
-    custom_start = custom_end = None
-    if period == "Custom Range":
-        with col2:
-            custom_start = st.date_input("Start Date", value=dt.date.today().replace(day=1))
-        with col3:
-            custom_end = st.date_input("End Date", value=dt.date.today())
+if df.empty:
+    st.warning("No transactions yet. Import statements in the Close Month page.")
+    st.stop()
 
-    df_filtered, start_date, end_date = get_period_filter(df, period, custom_start, custom_end)
+c1, c2, c3 = st.columns([1, 1, 1])
+with c1:
+    period = st.selectbox(
+        "Time Period",
+        [
+            "Current Close Month (Amex-cycle aware)",
+            "Current Calendar Month",
+            "Prior Calendar Month",
+            "Custom Range",
+            "All Time",
+        ],
+    )
 
-    # === Summary Metrics Cards ===
-    if budget_data:
-        total_budget = sum(budget_data[cat]["total"] for cat in budget_data)
-        total_spent = df_filtered["amount"].sum()
-        total_remaining = total_budget - total_spent
-        time_progress = calculate_time_progress(start_date, end_date)
-        
-        st.subheader("📊 Overview")
-        
-        col1, col2, col3, col4 = st.columns(4)
-        
-        with col1:
-            st.metric(
-                "Total Budget", 
-                f"${total_budget:,.0f}",
-                help="Total budgeted amount for selected period"
-            )
-        
-        with col2:
-            st.metric(
-                "Total Spent", 
-                f"${total_spent:,.0f}",
-                delta=f"${total_spent - total_budget:,.0f}",
-                delta_color="inverse",
-                help="Total expenses for selected period"
-            )
-        
-        with col3:
-            budget_used_pct = (total_spent / total_budget * 100) if total_budget > 0 else 0
-            st.metric(
-                "Budget Used", 
-                f"{budget_used_pct:.1f}%",
-                help="Percentage of total budget consumed"
-            )
-        
-        with col4:
-            if time_progress is not None:
-                st.metric(
-                    "Time Elapsed", 
-                    f"{time_progress:.1f}%",
-                    help="Percentage of time period that has passed"
-                )
-            else:
-                st.metric("Remaining Budget", f"${total_remaining:,.0f}")
+custom_start = custom_end = None
+if period == "Custom Range":
+    with c2:
+        custom_start = st.date_input("Start", value=dt.date.today().replace(day=1))
+    with c3:
+        custom_end = st.date_input("End", value=dt.date.today())
 
-    # === Unclassified Expenses Alert ===
-    unclassified = df_filtered[df_filtered["category"].isin(["UNCLASSIFIED", "Unknown", ""]) | df_filtered["category"].isna()]
-    if not unclassified.empty:
-        st.error(f"⚠️ **{len(unclassified)} unclassified expenses** totaling ${unclassified['amount'].sum():,.0f} found! Please classify these in the Expense Classifier.")
-        
-        with st.expander("View Unclassified Expenses"):
-            st.dataframe(unclassified[["date", "description", "amount"]].sort_values("date", ascending=False))
+start, end = _period_range(period, custom_start, custom_end)
+df_f = _apply_filter(df, period, start, end)
 
-    st.divider()
 
-    st.subheader("💰 Spending vs. Budget Analysis")
+# ---------- overview cards ----------
 
-    # === Category Analysis ===
-    cat_actual = df_filtered.groupby("category")["amount"].sum().reset_index()
-    # Exclude unnecessary categories from main analysis
-    cat_actual = cat_actual[~cat_actual["category"].isin(["UNCLASSIFIED", "ALTIS", "IGNORE"])]
+spendable = df_f[~df_f["section"].isin(["IGNORE", "INCOME"])]
+total_spent = spendable["amount_mxn"].sum()
 
-    if budget_data:
-        cat_budget = pd.DataFrame([
-            {"category": cat, "budgeted": budget_data[cat]["total"]} for cat in budget_data
-        ])
-        cat_merged = pd.merge(cat_actual, cat_budget, on="category", how="outer").fillna(0)
-        cat_merged["delta"] = cat_merged["budgeted"] - cat_merged["amount"]
-        cat_merged["utilization"] = (cat_merged["amount"] / cat_merged["budgeted"] * 100).round(1)
-        cat_merged = cat_merged.sort_values("amount", ascending=False)
+budget_total = sum(
+    v.get("total", 0.0)
+    for k, v in budget.items()
+    if k not in ("INCOME", "IGNORE")
+)
 
-        # Budget utilization indicators - filter out unwanted categories
-        budget_categories = cat_merged[~cat_merged["category"].isin(["ALTIS", "IGNORE"])]
-        
-        st.subheader("🎯 Budget Utilization by Category")
-        
-        for _, row in budget_categories.iterrows():
-            col1, col2 = st.columns([3, 1])
-            with col1:
-                utilization = row["utilization"] if row["budgeted"] > 0 else 0
-                color = "red" if utilization > 100 else "orange" if utilization > 80 else "green"
-                st.progress(
-                    min(utilization / 100, 1.0), 
-                    text=f"{row['category']}: ${row['amount']:,.0f} / ${row['budgeted']:,.0f} ({utilization:.1f}%)"
-                )
-            with col2:
-                delta_color = "red" if row["delta"] < 0 else "green"
-                st.markdown(f"<span style='color: {delta_color}; font-weight: bold;'>${row['delta']:+,.0f}</span>", unsafe_allow_html=True)
-
-        # Category comparison chart - filter out unwanted categories and make side-by-side
-        chart_data = budget_categories.melt(id_vars=["category"], value_vars=["amount", "budgeted"])
-        fig1 = px.bar(
-            chart_data,
-            x="category", y="value", color="variable",
-            title="Spending vs. Budget by Category",
-            labels={"value": "Amount ($)", "variable": "Type"},
-            color_discrete_map={"amount": "#ff7f0e", "budgeted": "#1f77b4"},
-            barmode="group"  # This makes bars side-by-side instead of stacked
-        )
-        fig1.update_traces(texttemplate='$%{y:,.0f}', textposition='outside')
-        fig1.update_layout(xaxis_tickangle=-45)
-        st.plotly_chart(fig1, use_container_width=True)
-
-        # === Subcategory Analysis ===
-        if "subcategory" in df_filtered.columns:
-            st.subheader("📋 Budget Utilization by Subcategory")
-            # Fill missing subcategories
-            df_sub = df_filtered.copy()
-            df_sub["subcategory"] = df_sub["subcategory"].fillna("No Subcategory")
-            
-            sub_actual = df_sub.groupby(["category", "subcategory"])["amount"].sum().reset_index()
-            # Exclude unnecessary categories from subcategory analysis
-            sub_actual = sub_actual[~sub_actual["category"].isin(["UNCLASSIFIED", "ALTIS", "IGNORE"])]
-
-            budget_rows = []
-            for cat in budget_data:
-                for sub, detail in budget_data[cat].get("subcategories", {}).items():
-                    budget_rows.append({
-                        "category": cat,
-                        "subcategory": sub,
-                        "budgeted": detail["amount"] if isinstance(detail, dict) else detail
-                    })
-
-            if budget_rows:
-                sub_budget = pd.DataFrame(budget_rows)
-                sub_merged = pd.merge(sub_actual, sub_budget, on=["category", "subcategory"], how="outer").fillna(0)
-                sub_merged["delta"] = sub_merged["budgeted"] - sub_merged["amount"]
-                sub_merged["utilization"] = (sub_merged["amount"] / sub_merged["budgeted"] * 100).round(1)
-                
-                # Sort by category, then by spending amount within each category
-                sub_merged = sub_merged.sort_values(["category", "amount"], ascending=[True, False])
-                
-                # Display as vertical list organized by category
-                current_category = None
-                for _, row in sub_merged.iterrows():
-                    # Show category header when it changes
-                    if row["category"] != current_category:
-                        current_category = row["category"]
-                        st.write(f"**{current_category}**")
-                    
-                    # Only show subcategories that have a budget or actual spending
-                    if row["budgeted"] > 0 or row["amount"] > 0:
-                        col1, col2 = st.columns([3, 1])
-                        with col1:
-                            utilization = row["utilization"] if row["budgeted"] > 0 else 0
-                            # Handle cases where there's no budget but there's spending
-                            if row["budgeted"] == 0 and row["amount"] > 0:
-                                progress_val = 1.0  # Show full bar for over-budget
-                                text = f"  {row['subcategory']}: ${row['amount']:,.0f} / $0 (No Budget Set)"
-                            else:
-                                progress_val = min(utilization / 100, 1.0)
-                                text = f"  {row['subcategory']}: ${row['amount']:,.0f} / ${row['budgeted']:,.0f} ({utilization:.1f}%)"
-                            
-                            st.progress(progress_val, text=text)
-                        with col2:
-                            delta_color = "red" if row["delta"] < 0 else "green"
-                            st.markdown(f"<span style='color: {delta_color}; font-weight: bold;'>${row['delta']:+,.0f}</span>", unsafe_allow_html=True)
-        else:
-            st.info("📋 Subcategory data not available in expense records. Classify expenses with subcategories to see detailed analysis.")
-
-    else:
-        st.info("💡 No budget file found — create one in the Budget Planner to enable comparisons.")
-        
-        # Show category spending without budget comparison
-        fig1_simple = px.bar(
-            cat_actual.sort_values("amount", ascending=False),
-            x="category", y="amount",
-            title="Total Spending by Category",
-            labels={"amount": "Amount ($)"}
-        )
-        fig1_simple.update_traces(texttemplate='$%{y:,.0f}', textposition='outside')
-        fig1_simple.update_layout(xaxis_tickangle=-45)
-        st.plotly_chart(fig1_simple, use_container_width=True)
-
-    # === Detailed Expenses Table ===
-    st.subheader("🧾 Detailed Expenses")
-    
-    # Filter options for the table
-    col1, col2 = st.columns(2)
-    with col1:
-        selected_categories = st.multiselect(
-            "Filter by Categories:",
-            options=df_filtered["category"].unique(),
-            default=df_filtered["category"].unique()
-        )
-    with col2:
-        min_amount = st.number_input("Minimum Amount ($):", min_value=0.0, value=0.0, step=10.0)
-    
-    table_filtered = df_filtered[
-        (df_filtered["category"].isin(selected_categories)) & 
-        (df_filtered["amount"] >= min_amount)
-    ].sort_values("date", ascending=False)
-    
-    # Display as interactive table with edit buttons
-    st.write("**Expense Details** (click ✏️ to edit)")
-    
-    # Create header row
-    header_cols = st.columns([2, 4, 2, 2, 2, 1])
-    with header_cols[0]:
-        st.write("**Date**")
-    with header_cols[1]:
-        st.write("**Description**")
-    with header_cols[2]:
-        st.write("**Category**")
-    with header_cols[3]:
-        if "subcategory" in table_filtered.columns:
-            st.write("**Subcategory**")
-        else:
-            st.write("**Type**")
-    with header_cols[4]:
-        st.write("**Amount**")
-    with header_cols[5]:
-        st.write("**Edit**")
-    
-    st.divider()
-    
-    # Display each row with edit button
-    for idx, row in table_filtered.iterrows():
-        cols = st.columns([2, 4, 2, 2, 2, 1])
-        
-        with cols[0]:
-            st.write(row["date"].strftime("%Y-%m-%d"))
-        with cols[1]:
-            st.write(row["description"])
-        with cols[2]:
-            st.write(row["category"])
-        with cols[3]:
-            if "subcategory" in table_filtered.columns:
-                st.write(row.get("subcategory", "No Subcategory"))
-            else:
-                st.write("—")
-        with cols[4]:
-            st.write(f"${row['amount']:,.0f}")
-        with cols[5]:
-            if st.button("✏️", key=f"edit_{idx}", help="Edit this expense"):
-                # Save to session state for editing
-                edit_data = row.to_dict()
-                # Convert date to string for JSON serialization
-                if 'date' in edit_data:
-                    edit_data['date'] = edit_data['date'].strftime('%Y-%m-%d')
-                
-                # Save to temp file for cross-page communication
-                os.makedirs("data", exist_ok=True)
-                with open("data/to_edit.json", "w", encoding="utf-8") as f:
-                    json.dump(edit_data, f, indent=2, ensure_ascii=False, default=str)
-                
-                # Redirect to Expense Classifier
-                st.switch_page("pages/classifier_ui.py")
-    
-    # Summary stats
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric("Total Expenses Shown", f"${table_filtered['amount'].sum():,.0f}")
-    with col2:
-        st.metric("Number of Transactions", len(table_filtered))
-    with col3:
-        avg_transaction = table_filtered["amount"].mean() if len(table_filtered) > 0 else 0
-        st.metric("Average Transaction", f"${avg_transaction:.0f}")
-
+st.subheader("Overview")
+k1, k2, k3, k4 = st.columns(4)
+k1.metric("Total Budget", f"${budget_total:,.0f}")
+k2.metric(
+    "Total Spent",
+    f"${total_spent:,.0f}",
+    delta=f"${total_spent - budget_total:,.0f}",
+    delta_color="inverse",
+)
+pct = (total_spent / budget_total * 100) if budget_total > 0 else 0
+k3.metric("Budget Used", f"{pct:.1f}%")
+tp = _time_progress(start, end)
+if tp is not None:
+    k4.metric("Time Elapsed", f"{tp:.1f}%")
 else:
-    st.warning("📋 No classified expense data found. Make sure to:")
-    st.markdown("""
-    1. Upload and classify expenses using the **Expense Classifier**
-    2. Ensure 'classified_expenses.json' exists in the /data folder
-    3. Create a budget using the **Budget Planner** for comparison features
-    """)
+    k4.metric("Remaining", f"${budget_total - total_spent:,.0f}")
+
+
+# ---------- unreviewed alert ----------
+
+unreviewed = df_f[df_f.get("reviewed", False) == False]  # noqa: E712
+if not unreviewed.empty:
+    st.warning(
+        f"⚠️ {len(unreviewed)} unreviewed transactions in this period totaling "
+        f"${unreviewed['amount_mxn'].sum():,.0f}. Sweep them in the Classifier or Close Month page."
+    )
+
+
+st.divider()
+
+
+# ---------- section utilization ----------
+
+st.subheader("Spending by Section")
+by_section = (
+    spendable.groupby("section")["amount_mxn"].sum().reset_index()
+)
+by_section["budgeted"] = by_section["section"].map(
+    lambda s: budget.get(s, {}).get("total", 0.0)
+)
+by_section["delta"] = by_section["budgeted"] - by_section["amount_mxn"]
+by_section["utilization"] = (
+    by_section["amount_mxn"] / by_section["budgeted"] * 100
+).where(by_section["budgeted"] > 0, 0).round(1)
+by_section["section_order"] = by_section["section"].apply(lambda s: SECTIONS.index(s) if s in SECTIONS else 999)
+by_section = by_section.sort_values("section_order")
+by_section["label"] = by_section["section"].map(SECTION_LABELS)
+
+for _, row in by_section.iterrows():
+    c1, c2 = st.columns([3, 1])
+    with c1:
+        util = row["utilization"]
+        st.progress(
+            min(util / 100, 1.0) if row["budgeted"] > 0 else 0.0,
+            text=(
+                f"{row['label']}: ${row['amount_mxn']:,.0f} / ${row['budgeted']:,.0f} ({util:.1f}%)"
+                if row["budgeted"] > 0
+                else f"{row['label']}: ${row['amount_mxn']:,.0f} (no budget set)"
+            ),
+        )
+    with c2:
+        delta_color = "red" if row["delta"] < 0 else "green"
+        st.markdown(
+            f"<span style='color:{delta_color};font-weight:bold;'>${row['delta']:+,.0f}</span>",
+            unsafe_allow_html=True,
+        )
+
+
+# ---------- chart ----------
+
+chart_df = by_section[by_section["budgeted"] > 0].melt(
+    id_vars=["label"], value_vars=["amount_mxn", "budgeted"]
+)
+if not chart_df.empty:
+    fig = px.bar(
+        chart_df,
+        x="label", y="value", color="variable",
+        labels={"value": "MXN", "variable": "", "label": ""},
+        color_discrete_map={"amount_mxn": "#ff7f0e", "budgeted": "#1f77b4"},
+        barmode="group",
+    )
+    fig.update_traces(texttemplate="$%{y:,.0f}", textposition="outside")
+    fig.update_layout(xaxis_tickangle=-30)
+    st.plotly_chart(fig, use_container_width=True)
+
+
+# ---------- subcategory drill-down ----------
+
+st.subheader("Subcategories")
+sub_actual = (
+    spendable.assign(subcategory=spendable["subcategory"].replace("", "—").fillna("—"))
+    .groupby(["section", "subcategory"])["amount_mxn"].sum().reset_index()
+)
+sub_budget_rows = []
+for s, block in budget.items():
+    for sub, detail in block.get("subcategories", {}).items():
+        amt = detail["amount"] if isinstance(detail, dict) else detail
+        sub_budget_rows.append({"section": s, "subcategory": sub, "budgeted": amt})
+sub_budget = pd.DataFrame(sub_budget_rows) if sub_budget_rows else pd.DataFrame(
+    columns=["section", "subcategory", "budgeted"]
+)
+sub_merged = pd.merge(sub_actual, sub_budget, on=["section", "subcategory"], how="outer").fillna(0)
+sub_merged["delta"] = sub_merged["budgeted"] - sub_merged["amount_mxn"]
+sub_merged["utilization"] = (
+    sub_merged["amount_mxn"] / sub_merged["budgeted"] * 100
+).where(sub_merged["budgeted"] > 0, 0).round(1)
+sub_merged["section_order"] = sub_merged["section"].apply(lambda s: SECTIONS.index(s) if s in SECTIONS else 999)
+sub_merged = sub_merged.sort_values(["section_order", "amount_mxn"], ascending=[True, False])
+
+current_section = None
+for _, row in sub_merged.iterrows():
+    if row["section"] != current_section:
+        current_section = row["section"]
+        st.write(f"**{SECTION_LABELS.get(current_section, current_section)}**")
+    if row["budgeted"] <= 0 and row["amount_mxn"] <= 0:
+        continue
+    c1, c2 = st.columns([3, 1])
+    with c1:
+        util = row["utilization"]
+        if row["budgeted"] == 0 and row["amount_mxn"] > 0:
+            text = f"  {row['subcategory']}: ${row['amount_mxn']:,.0f} (no budget)"
+            st.progress(1.0, text=text)
+        else:
+            st.progress(
+                min(util / 100, 1.0),
+                text=f"  {row['subcategory']}: ${row['amount_mxn']:,.0f} / ${row['budgeted']:,.0f} ({util:.1f}%)",
+            )
+    with c2:
+        color = "red" if row["delta"] < 0 else "green"
+        st.markdown(
+            f"<span style='color:{color};font-weight:bold;'>${row['delta']:+,.0f}</span>",
+            unsafe_allow_html=True,
+        )
+
+
+st.divider()
+
+
+# ---------- detailed table ----------
+
+st.subheader("Transactions")
+f1, f2, f3 = st.columns(3)
+with f1:
+    section_filter = st.multiselect(
+        "Sections",
+        options=sections_in_order(df_f["section"].unique()),
+        default=sections_in_order(df_f["section"].unique()),
+        format_func=lambda s: SECTION_LABELS.get(s, s),
+    )
+with f2:
+    origin_filter = st.multiselect(
+        "Origins",
+        options=sorted(df_f["origin"].dropna().unique()),
+        default=sorted(df_f["origin"].dropna().unique()),
+    )
+with f3:
+    min_amt = st.number_input("Min amount MXN", min_value=0.0, value=0.0, step=50.0)
+
+view = df_f[
+    df_f["section"].isin(section_filter)
+    & df_f["origin"].isin(origin_filter)
+    & (df_f["amount_mxn"] >= min_amt)
+].sort_values("date", ascending=False)
+
+st.write("**Transactions** (click ✏️ to edit in the Classifier)")
+header = st.columns([2, 4, 1.5, 1.5, 2, 2, 0.7])
+for col, title in zip(header, ["Date", "Description", "Origin", "Amount", "Section", "Subcategory", "Edit"]):
+    col.write(f"**{title}**")
+st.divider()
+
+for _, row in view.iterrows():
+    cols = st.columns([2, 4, 1.5, 1.5, 2, 2, 0.7])
+    cols[0].write(row["date"].strftime("%Y-%m-%d"))
+    cols[1].write(row["description"])
+    cols[2].write(row.get("origin", "—"))
+    cols[3].write(f"${row['amount_mxn']:,.0f}")
+    cols[4].write(SECTION_LABELS.get(row["section"], row["section"]))
+    cols[5].write(row.get("subcategory", "") or "—")
+    with cols[6]:
+        if st.button("✏️", key=f"edit_{row['id']}"):
+            os.makedirs("data", exist_ok=True)
+            edit_data = dict(row)
+            edit_data["date"] = row["date"].strftime("%Y-%m-%d")
+            # dates/ints → json-safe
+            with open("data/to_edit.json", "w", encoding="utf-8") as f:
+                json.dump(edit_data, f, indent=2, ensure_ascii=False, default=str)
+            st.switch_page("pages/classifier_ui.py")
+
+c1, c2, c3 = st.columns(3)
+c1.metric("Shown total", f"${view['amount_mxn'].sum():,.0f}")
+c2.metric("Transactions", len(view))
+c3.metric("Average", f"${view['amount_mxn'].mean():,.0f}" if len(view) else "$0")
